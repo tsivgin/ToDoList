@@ -1,0 +1,103 @@
+﻿@model IEnumerable<ToDoList.Models.ToDoLists>
+
+@{
+    ViewBag.Title = "ToDoList";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>To Do List</h2>
+
+<p>
+    @Html.ActionLink("Create New Do", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Definition)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DueDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Priority)
+        </th>
+        <th>
+            Edit
+        </th>
+        <th>
+            Delete
+        </th>
+    </tr>
+    @{ 
+        var count = 0;
+        foreach (var item in Model)
+        {
+
+            <tr>
+                <td id="@count" style="display:none">
+                   @{ 
+                       var def = item.Definition + "     DueDate: " + item.DueDate;
+                    <p class="text-justify text-danger">@def</p>
+                       }
+                </td>
+
+                <td id="@count">
+                    @Html.DisplayFor(modelItem => item.Definition)
+                </td>
+                <td name="DueDate">
+                    @Html.DisplayFor(modelItem => item.DueDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Priority)
+                </td>
+              
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id=item.ID },new { @class = "btn btn-success" })
+                </td>
+                <td>
+                    @Html.ActionLink("Delete", "Delete", new { id = item.ID },new { @class = "btn btn-danger" })
+                </td>
+            </tr>
+            count++;
+        }
+
+    }
+
+</table>
+
+@* Scripts Render Layout içinde çağrılmıştır fakat bu sayfada görülmemesinden dolayı bir daha eklemek zorunda kalınmıştır. *@
+@Scripts.Render("~/bundles/jquery")
+
+
+<script>
+    $(document).ready(function () {
+        var fullDate = new Date();
+        console.log(fullDate);
+        var twoDigitMonth = fullDate.getMonth() + 1 + ""; if (twoDigitMonth.length == 1) twoDigitMonth = "0" + twoDigitMonth;
+        var twoDigitHour = fullDate.getHours() + ""; if (twoDigitHour.length == 1) twoDigitHour = "0" + twoDigitHour;
+        var twoDigitMinute = fullDate.getMinutes() + ""; if (twoDigitMinute.length == 1) twoDigitMinute = "0" + twoDigitMinute;
+        var currentDate = fullDate.getDate() + "." + twoDigitMonth + "." + fullDate.getFullYear() + " " + twoDigitHour + ":" + twoDigitMinute + ":00";
+        console.log(currentDate);
+
+        $("[name=DueDate]").each(function (index, element) {           
+            if (element.innerHTML.trim() === currentDate.toString().trim()) {
+                $("#" + index).dialog({
+                    resizable: false,
+                    height: "auto",
+                    width: 400,
+                    modal: true,
+                    buttons: {
+                        Cancel: function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                });
+
+            }
+        });
+    });
+
+
+</script>
+
+
